@@ -1,0 +1,5 @@
+﻿Enable-Migrations -ContexTypeName BHODContext -MigrationsDirectory Migrations
+
+ Add-Migration MyFirstMigration -Context BHODContext
+
+  Update-database MyFirstMigration -Context BHODContext

@@ -1,0 +1,33 @@
+﻿@using System.Reflection
+@model BHOD.Domain.Selections.PersonalIndexModel
+
+<div>id="personal">
+    <h3> Customer Selection</h3>
+    <div id="personalTable">
+        <table class="table table-condensed" id="selectionIndexTable">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+               
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var personal in Model.Personal)
+            {
+                <tr class="personalRow">
+                    <td class="">
+                        <a asp-controller="Selection" asp-action="Detail" asp-route-id="personal.Id">
+                            img src="@personal.ImageUrl" class="imageCell"/>
+                        </a>
+                    </td>
+                    <td class=""> @personal.Name</td>
+                    <td class="">@personal.BarberOrHairsylist</td>
+                   
+                </tr>
+             }
+
+            </tbody>
+        </table>
+    </div>
+    </div>

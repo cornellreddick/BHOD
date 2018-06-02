@@ -29,6 +29,9 @@ namespace BHOD
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<BHODContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -37,6 +40,8 @@ namespace BHOD
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+            services.AddSingleton(Configuration); //added they info together to display in the view
+            services.AddScoped<IShopPersonal, ShopPersonalServices>();//added they info together to display in the view
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
