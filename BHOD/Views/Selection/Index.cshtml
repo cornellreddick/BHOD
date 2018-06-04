@@ -16,13 +16,21 @@
             @foreach (var personal in Model.Personal)
             {
                 <tr class="personalRow">
+
                     <td class="">
-                        <a asp-controller="Selection" asp-action="Detail" asp-route-id="personal.Id">
-                            img src="@personal.ImageUrl" class="imageCell"/>
-                        </a>
+                    <a asp-controller="Selection" asp-action="Detail" asp-route-id="personal.Id">
+                        img src="@personal.ImageUrl" class="imageCell"
+                </a>
+
+                
+                <td>
+                    <td class="">
+                        @personal.Name
                     </td>
-                    <td class=""> @personal.Name</td>
-                    <td class="">@personal.BarberOrHairsylist</td>
+                    <td class="">
+                        @personal.BarberOrHairstylist
+                    </td>
+                
                    
                 </tr>
              }
