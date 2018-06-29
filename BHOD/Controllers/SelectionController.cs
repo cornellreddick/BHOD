@@ -38,5 +38,11 @@ namespace BHOD.Controllers
 
             return View(model);
         }
+
+        public IActionResult Detail(int id)
+        {
+            var personal = _personal.GetById(id)
+            return View();
+        }
     }
 }
