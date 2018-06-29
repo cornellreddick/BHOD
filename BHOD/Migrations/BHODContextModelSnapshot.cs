@@ -213,12 +213,15 @@ namespace BHOD.Migrations
                     b.Property<string>("State")
                         .IsRequired();
 
-                    b.Property<string>("Url")
-                        .IsRequired();
+                    b.Property<int>("StatusId");
+
+                    b.Property<string>("Url");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("ShopPersonals");
 
@@ -246,10 +249,7 @@ namespace BHOD.Migrations
                 {
                     b.HasBaseType("BHOD.Models.ShopPersonal");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired();
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("BarberName")
                         .IsRequired();
 
                     b.ToTable("Barber");
@@ -261,13 +261,8 @@ namespace BHOD.Migrations
                 {
                     b.HasBaseType("BHOD.Models.ShopPersonal");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnName("Hairstylist_FirstName");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnName("Hairstylist_LastName");
+                    b.Property<string>("HairstylistName")
+                        .IsRequired();
 
                     b.ToTable("Hairstylist");
 
@@ -333,6 +328,11 @@ namespace BHOD.Migrations
                     b.HasOne("BHOD.Models.Shop", "Location")
                         .WithMany("ShopPersonal")
                         .HasForeignKey("LocationId");
+
+                    b.HasOne("BHOD.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

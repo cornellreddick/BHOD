@@ -27,9 +27,7 @@ namespace BHOD.Services
 
         public ShopPersonal GetById(int id)
         {
-            return _context.ShopPersonals
-                .Include(personal => personal.Status)
-                .Include(personal => personal.Location)
+            return GetAll()
                 .FirstOrDefault(personal => personal.Id == id);
         }
 
@@ -48,66 +46,33 @@ namespace BHOD.Services
             return barber.Any() ? "Barber" : "Hairstylist";
         }
 
-        public string ShopName(int id)
+    
+        public string GetStylistName(int id)
         {
-            if (_context.ShopPersonals.Any(a => a.Id == id))
-            {
-                return _context.ShopPersonals
-                    .FirstOrDefault(a => a.Id == id).ShopName;
-            }
-            else
-            {
-                return "";
-            }
+            return _context.ShopPersonals.FirstOrDefault(a => a.Id == id)
+                .ShopName;
+                
         }
-
-        public string GetCity(int id)
-        {
-            if (_context.Barbers.Any(a => a.Id == id))
-            {
-                return _context.Barbers
-                    .FirstOrDefault(a => a.Id == id).City;
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        public string GetState(int id)
-        {
-            if (_context.ShopPersonals.Any(a => a.Id == id))
-            {
-                return _context.ShopPersonals
-                    .FirstOrDefault(a => a.Id == id).State;
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-
 
         public string GetBarberOrHairstylist(int id)
         {
             var isBarber = _context.ShopPersonals.OfType<Barber>()
-                .Where(personal => personal.Id == id);
+                .Where(personal => personal.Id == id).Any();
 
             var isHairstylist = _context.ShopPersonals.OfType<Hairstylist>()
-                .Where(personal => personal.Id == id);
+                .Where(personal => personal.Id == id).Any();
 
-            return isBarber != null?
+            return isBarber ?
                 
-                  _context.Barbers.FirstOrDefault(barber => barber.Id == id).BarberFirstName
-                : _context.Hairstylists.FirstOrDefault(hairstylist => hairstylist.Id == id).HairstylistsFirstName ??
+                  _context.Barbers.FirstOrDefault(barber => barber.Id == id).BarberName
+                : _context.Hairstylists.FirstOrDefault(hairstylist => hairstylist.Id == id).HairstylistName ??
                   "Unknown";
             
         }
 
         public Shop GetCurrentLocation(int id)
         {
-            throw new NotImplementedException();
+            return _context.ShopPersonals.FirstOrDefault(personal => personal.Id == id).Location;
         }
     }
 }

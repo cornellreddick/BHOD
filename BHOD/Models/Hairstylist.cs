@@ -9,8 +9,7 @@ namespace BHOD.Models
     public class Hairstylist : ShopPersonal
     {
         [Required]
-        public string HairstylistsFirstName { get; set; }
-        [Required]
-        public string HairstylistLastName { get; set; }
+        public string HairstylistName { get; set; }
+        
     }
 }

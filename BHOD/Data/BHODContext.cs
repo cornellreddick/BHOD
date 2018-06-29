@@ -20,7 +20,7 @@ namespace BHOD.Data
         public DbSet<Shop> Shops { get; set; }
         public DbSet<ShopHours> ShopHourses { get; set; }
         public DbSet<ShopPersonal> ShopPersonals { get; set; }
-        public DbSet<Status> Statuss { get; set; }
+        public DbSet<Status> Statuses { get; set; }
         public DbSet<AppointmentHistory> AppointmentHistories { get; set; }
         public DbSet<Appointment> Appointmentses { get; set; }
         

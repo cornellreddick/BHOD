@@ -14,11 +14,9 @@ namespace BHOD.Services
         void Add(ShopPersonal newPersonal);
         string GetBarberOrHairstylist(int id);
         string GetType(int id);
-        string ShopName(int id);
-        string GetCity(int id);
-        string GetState(int id);
+        string GetStylistName(int id);
 
         Shop GetCurrentLocation(int id);
-        //commitpus
+        
     }
 }

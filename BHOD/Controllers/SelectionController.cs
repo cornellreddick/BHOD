@@ -26,6 +26,7 @@ namespace BHOD.Controllers
                 {
                     Id = result.Id,
                     ImageUrl = result.ImageUrl,
+                    GetStylistName = result.ShopName,
                     BarberOrHairstylist = _personal.GetBarberOrHairstylist(result.Id),
                     Type = _personal.GetType(result.Id)
                 });

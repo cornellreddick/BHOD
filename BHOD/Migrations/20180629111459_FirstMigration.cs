@@ -4,20 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BHOD.Migrations
 {
-    public partial class IntitialEntityModels : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "PaymentMethodId",
-                table: "Customers",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "ShopId",
-                table: "Customers",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "PaymentMethods",
                 columns: table => new
@@ -65,6 +55,37 @@ namespace BHOD.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PaymentMethodId = table.Column<int>(nullable: true),
+                    ShopId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_PaymentMethods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Shops_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "Shops",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShopHourses",
                 columns: table => new
                 {
@@ -99,14 +120,13 @@ namespace BHOD.Migrations
                     PostalCode = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: false),
-                    Url = table.Column<string>(nullable: false),
+                    StatusId = table.Column<int>(nullable: false),
+                    Url = table.Column<string>(nullable: true),
                     ImageUrl = table.Column<string>(nullable: true),
                     LocationId = table.Column<int>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    Hairstylist_FirstName = table.Column<string>(nullable: true),
-                    Hairstylist_LastName = table.Column<string>(nullable: true)
+                    BarberName = table.Column<string>(nullable: true),
+                    HairstylistName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -117,6 +137,12 @@ namespace BHOD.Migrations
                         principalTable: "Shops",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShopPersonals_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,16 +229,6 @@ namespace BHOD.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_PaymentMethodId",
-                table: "Customers",
-                column: "PaymentMethodId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customers_ShopId",
-                table: "Customers",
-                column: "ShopId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AppointmentHistories_PaymentId",
                 table: "AppointmentHistories",
                 column: "PaymentId");
@@ -231,6 +247,16 @@ namespace BHOD.Migrations
                 name: "IX_Appointmentses_ShopPersonalId",
                 table: "Appointmentses",
                 column: "ShopPersonalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_PaymentMethodId",
+                table: "Customers",
+                column: "PaymentMethodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_ShopId",
+                table: "Customers",
+                column: "ShopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PreBookedAppointmentses_PaymentMethodId",
@@ -252,33 +278,14 @@ namespace BHOD.Migrations
                 table: "ShopPersonals",
                 column: "LocationId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Customers_PaymentMethods_PaymentMethodId",
-                table: "Customers",
-                column: "PaymentMethodId",
-                principalTable: "PaymentMethods",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Customers_Shops_ShopId",
-                table: "Customers",
-                column: "ShopId",
-                principalTable: "Shops",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPersonals_StatusId",
+                table: "ShopPersonals",
+                column: "StatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Customers_PaymentMethods_PaymentMethodId",
-                table: "Customers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Customers_Shops_ShopId",
-                table: "Customers");
-
             migrationBuilder.DropTable(
                 name: "AppointmentHistories");
 
@@ -286,13 +293,13 @@ namespace BHOD.Migrations
                 name: "Appointmentses");
 
             migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
                 name: "PreBookedAppointmentses");
 
             migrationBuilder.DropTable(
                 name: "ShopHourses");
-
-            migrationBuilder.DropTable(
-                name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "PaymentMethods");
@@ -303,21 +310,8 @@ namespace BHOD.Migrations
             migrationBuilder.DropTable(
                 name: "Shops");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Customers_PaymentMethodId",
-                table: "Customers");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Customers_ShopId",
-                table: "Customers");
-
-            migrationBuilder.DropColumn(
-                name: "PaymentMethodId",
-                table: "Customers");
-
-            migrationBuilder.DropColumn(
-                name: "ShopId",
-                table: "Customers");
+            migrationBuilder.DropTable(
+                name: "Statuses");
         }
     }
 }

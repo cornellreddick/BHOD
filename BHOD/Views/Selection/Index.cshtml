@@ -1,7 +1,7 @@
-﻿@using System.Reflection
+﻿
 @model BHOD.Domain.Selections.PersonalIndexModel
 
-<div>id="personal">
+<div id="personal">
     <h3> Customer Selection</h3>
     <div id="personalTable">
         <table class="table table-condensed" id="selectionIndexTable">
@@ -9,32 +9,25 @@
             <tr>
                 <th>Image</th>
                 <th>Name</th>
+                <th>Barber / Hairstylist</th>
+                <th>Type</th>
                
             </tr>
             </thead>
             <tbody>
-            @foreach (var personal in Model.Personal)
+            @foreach (var person in Model.Personal)
             {
                 <tr class="personalRow">
-
                     <td class="">
-                    <a asp-controller="Selection" asp-action="Detail" asp-route-id="personal.Id">
-                        img src="@personal.ImageUrl" class="imageCell"
-                </a>
-
-                
-                <td>
-                    <td class="">
-                        @personal.Name
+                        <a asp-controller="Selection" asp-action="Detail" asp-route-id="@person.Id">
+                            <img src="@person.ImageUrl" class="imageCell" />
+                        </a>
                     </td>
-                    <td class="">
-                        @personal.BarberOrHairstylist
-                    </td>
-                
-                   
+                    <td class="">@person.GetStylistName</td>
+                    <td class="">@person.BarberOrHairstylist</td>
+                    <td class="">@person.Type</td>
                 </tr>
-             }
-
+            }
             </tbody>
         </table>
     </div>
