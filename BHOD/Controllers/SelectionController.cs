@@ -41,8 +41,20 @@ namespace BHOD.Controllers
 
         public IActionResult Detail(int id)
         {
-            var personal = _personal.GetById(id)
-            return View();
+            var personal = _personal.GetById(id);
+
+            var model = new PersonalDetailModel
+            {
+                PersonalId = id,
+                GetStylistName = personal.ShopName,
+                Status = personal.Status.Name,
+                ImageUrl = personal.ImageUrl,
+                BarberOrHairstylist = _personal.GetBarberOrHairstylist(id),
+                CurrentLocation = _personal.GetCurrentLocation(id).Name,
+                Type = _personal.GetType(id)
+            };
+
+            return View(model);  
         }
     }
 }

@@ -20,7 +20,7 @@ namespace BHOD.Domain.Selections
         public string CustomerName { get; set; }
         public Appointment LatestAppointment { get; set; }
         public IEnumerable<AppointmentHistory> AppointmentHistory { get; set; }
-        public IEnumerable<PersonalPrebookedModel> PrebookedAppointment { get; set }
+        public IEnumerable<PersonalPrebookedModel> PrebookedAppointment { get; set; }
 
         public class PersonalPrebookedModel
         {
