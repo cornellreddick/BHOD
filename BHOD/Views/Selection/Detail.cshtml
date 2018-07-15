@@ -17,25 +17,25 @@
             <p id="itemGetBarber">@Model.BarberOrHairstylist</p>
             <p id="itemStatus">@Model.Status</p>
             <p id="itemType">@Model.Type</p>
-            <p id="itemLocation">@Model.CurrentLocation</p>
+            @*<p id="itemLocation">@Model.CurrentLocation</p>*@
 
             @if (Model.Status == "Not Available")
             {
                 <p id="itemCustomer">Apointment Schedule by: @Model.CustomerName</p>
-                <p><a class="btn btn-lg btn-warning" role="button" asp-controller="Selection" asp-action="PrebookedAppointment" asp-route-id="@Model.PersonalId">Booked Appointment</a></p>
+                <p><a class="btn btn-lg btn-info" role="button" asp-controller="Selection" asp-action="PrebookedAppointment" asp-route-id="@Model.PersonalId">Schedule Appointment</a></p>
 
             }
 
             @if (Model.Status == "Available")
             {
-                <p><a class="btn btn-lg btn-info" role="button" asp-controller="Selection" asp-action="ScheduledAppointment" asp-route-id="@Model.PersonalId">Scheduled Appointment</a></p>
+                <p><a class="btn btn-lg btn-info" role="button" asp-controller="Selection" asp-action="ScheduledAppointment" asp-route-id="@Model.PersonalId">Get Service</a></p>
             }
         </div>
         <div class="col-md-4 detailInfo">
             <table>
                 <tr>
-                    <td class="itemLabel">TO DO:</td>
-                    <td class="itemValue">TO DO:</td>
+                    <td class="itemLabel">Service:</td>
+                    <td class="itemValue">$20.00:</td>
                 </tr>
                 <tr>
                     <td class="itemLabel">TO DO:</td>
