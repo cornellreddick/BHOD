@@ -42,6 +42,7 @@ namespace BHOD
             services.AddMvc();
             services.AddSingleton(Configuration); //added they info together to display in the view
             services.AddScoped<IShopPersonal, ShopPersonalServices>();//added they info together to display in the view
+            services.AddScoped<IAppointment, AppointmentService>();//Added this to leverage dependancy injection to allow this to work with other services
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

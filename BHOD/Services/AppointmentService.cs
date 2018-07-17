@@ -1,5 +1,6 @@
 ﻿using BHOD.Data;
 using BHOD.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,39 +10,73 @@ namespace BHOD.Services
 {
     public class AppointmentService : IAppointment
     {
+        private BHODContext _context;
+
+        public AppointmentService(BHODContext context)
+        {
+            _context = context;
+        }
+
         public void Add(Appointment newAppointment)
         {
-            throw new NotImplementedException();
+            _context.Add(newAppointment);
+            _context.SaveChanges();
         }
-
-        public void AppointmentIn(int personalId, int paymentMethodId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AppointmentOut(int personalId, int paymentMethodId)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public IEnumerable<Appointment> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Appointmentses;
         }
 
         public IEnumerable<AppointmentHistory> GetAppointmentHistory(int id)
         {
-            throw new NotImplementedException();
+            return _context.AppointmentHistories
+                .Include(a => a.Shop)//Added to show a value here.
+                .Include(a => a.Payment)
+                .Where(a => a.Shop.Id == id);
         }
 
-        public Appointment GetById(int AppointmentId)
+        public Appointment GetById(int appointmentId)
         {
-            throw new NotImplementedException();
+            return GetAll().FirstOrDefault(appoinment => appoinment.Id == appointmentId);
         }
 
         public IEnumerable<PreBookedAppointments> GetCurrentPreBooked(int id)
         {
-            throw new NotImplementedException();
+            return _context.PreBookedAppointmentses
+                 .Include(a => a.ShopPersonal)
+                 .Where(a => a.ShopPersonal.Id == id);
+        }
+
+        public Appointment GetAppointment(int personalId)
+        {
+            return _context.Appointmentses
+                .Where(a => a.ShopPersonal.Id == personalId)
+                .OrderByDescending(a => a.Since)
+                .FirstOrDefault();
+        }
+
+        private void CloseExistingAppointmentHistory(int personalId, DateTime now)
+        {
+            var history = _context.AppointmentHistories
+                .FirstOrDefault(a => a.Shop.Id == personalId && a.CheckedIn == null);
+
+            if (history != null)
+            {
+                _context.Update(history);
+                history.CheckedIn = now;
+            }
+        }
+
+        private void RemoveExistingCheckouts(int personalId)
+        {
+            var appointment = _context.Appointmentses
+                .FirstOrDefault(app => app.ShopPersonal.Id == personalId);
+
+            if (appointment != null)
+            {
+                _context.Remove(appointment);
+            }
         }
 
         public string GetCurrentPreBookedCustomerName(int id)
@@ -55,6 +90,16 @@ namespace BHOD.Services
         }
 
         public void Reserved(int personalId, int paymentMethodId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AppointmentIn(int personalId, int paymentMethodId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AppointmentOut(int personalId, int paymentMethodId)
         {
             throw new NotImplementedException();
         }
