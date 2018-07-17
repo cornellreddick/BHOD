@@ -105,7 +105,13 @@ namespace BHOD.Services
 
         public void Reserved(int personalId, int paymentMethodId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+
+            var personal = _context.ShopPersonals
+                .FirstOrDefault(p => p.Id == personalId);
+
+            var payment = _context.PaymentMethods
+                .FirstOrDefault(m => m.Id == paymentMethodId);
         }
 
         public void AppointmentIn(int personalId, int paymentMethodId)
@@ -141,11 +147,11 @@ namespace BHOD.Services
                 .OrderBy(prebooked => prebooked.PreBookedPlaced)
                 .FirstOrDefault();
 
-            var card = earliestPlaced.PreBookedPlaced;
+            var payment = earliestPlaced.PaymentMethod;
 
             _context.Remove(earliestPlaced);
             _context.SaveChanges();
-            AppointmentOut(personalId, card.Id);
+            AppointmentOut(personalId, payment.Id);
 
         }
 
@@ -162,8 +168,8 @@ namespace BHOD.Services
             UpdatePersonalStatus(personalId, "Reserved");
 
             var PaymentMethod = _context.PaymentMethods
-                .Include(card => card.Appointments)
-                .FirstOrDefault(card => card.Id == paymentMethodId);
+                .Include(payment => payment.Appointments)
+                .FirstOrDefault(payment => payment.Id == paymentMethodId);
 
             var now = DateTime.Now;
 
@@ -177,6 +183,17 @@ namespace BHOD.Services
             };
 
             _context.Add(appointment);
+
+            var appointmentHistory = new AppointmentHistory
+            {
+                CheckedOut = now,
+                Shop = item,
+                Payment = PaymentMethod
+
+            };
+
+            _context.Add(appointmentHistory);
+            _context.SaveChanges();
         }
 
         private DateTime GetDefaultAppointmenTime(DateTime now)
