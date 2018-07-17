@@ -66,6 +66,8 @@ namespace BHOD.Services
                 _context.Update(history);
                 history.CheckedIn = now;
             }
+
+            _context.SaveChanges();
         }
 
         private void RemoveExistingCheckouts(int personalId)
@@ -77,8 +79,20 @@ namespace BHOD.Services
             {
                 _context.Remove(appointment);
             }
+            _context.SaveChanges();
         }
 
+        private void UpdatePersonalStatus(int personalId, string s)
+        {
+            var item = _context.ShopPersonals
+                .FirstOrDefault(p => p.Id == personalId);
+
+                _context.Update(item);
+
+            item.Status = _context.Statuses
+            .FirstOrDefault(status => status.Name == "Available");
+
+        }
         public string GetCurrentPreBookedCustomerName(int id)
         {
             throw new NotImplementedException();
@@ -96,7 +110,29 @@ namespace BHOD.Services
 
         public void AppointmentIn(int personalId, int paymentMethodId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+
+            var item = _context.ShopPersonals
+                .FirstOrDefault(p => p.Id == personalId);
+
+            _context.Update(item);
+
+            RemoveExistingCheckouts(personalId);
+
+            CloseExistingAppointmentHistory(personalId, now);
+
+            var currentPreBookedAppointments = _context.PreBookedAppointmentses
+                .Include(p => p.ShopPersonal)
+                .Include(p => p.PaymentMethod)
+                .Where(p => p.ShopPersonal.Id == personalId);
+
+            if (currentPreBookedAppointments.Any())
+            {
+                PreBookedAppointmentsToFirstPlaced(personalId, currentPreBookedAppointments);
+            }
+
+            UpdatePersonalStatus(personalId, "Available");
+
         }
 
         public void AppointmentOut(int personalId, int paymentMethodId)
