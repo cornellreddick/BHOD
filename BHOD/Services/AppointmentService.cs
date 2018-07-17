@@ -115,8 +115,7 @@ namespace BHOD.Services
             var item = _context.ShopPersonals
                 .FirstOrDefault(p => p.Id == personalId);
 
-            _context.Update(item);
-
+           
             RemoveExistingCheckouts(personalId);
 
             CloseExistingAppointmentHistory(personalId, now);
@@ -132,12 +131,66 @@ namespace BHOD.Services
             }
 
             UpdatePersonalStatus(personalId, "Available");
+            _context.SaveChanges();
+
+        }
+
+        private void PreBookedAppointmentsToFirstPlaced(int personalId, IQueryable<PreBookedAppointments> currentPreBookedAppointments)
+        {
+            var earliestPlaced = currentPreBookedAppointments
+                .OrderBy(prebooked => prebooked.PreBookedPlaced)
+                .FirstOrDefault();
+
+            var card = earliestPlaced.PreBookedPlaced;
+
+            _context.Remove(earliestPlaced);
+            _context.SaveChanges();
+            AppointmentOut(personalId, card.Id);
 
         }
 
         public void AppointmentOut(int personalId, int paymentMethodId)
         {
-            throw new NotImplementedException();
+            if (IsAppointmentPlaced(personalId))
+            {
+                return; 
+            }
+
+            var item = _context.ShopPersonals
+                .FirstOrDefault(p => p.Id == personalId);
+
+            UpdatePersonalStatus(personalId, "Reserved");
+
+            var PaymentMethod = _context.PaymentMethods
+                .Include(card => card.Appointments)
+                .FirstOrDefault(card => card.Id == paymentMethodId);
+
+            var now = DateTime.Now;
+
+            var appointment = new Appointment
+            {
+                ShopPersonal = item,
+                PaymentMethod = PaymentMethod,
+                Since = now,
+                Until = GetDefaultAppointmenTime(now)
+
+            };
+
+            _context.Add(appointment);
+        }
+
+        private DateTime GetDefaultAppointmenTime(DateTime now)
+        {
+            return now.AddDays(7);
+        }
+
+        private bool IsAppointmentPlaced(int personalId)
+        {
+            var isAppointmentPlaced = _context.Appointmentses
+                .Where(ap => ap.ShopPersonal.Id == personalId)
+                .Any();
+
+            return isAppointmentPlaced;
         }
     }
 }
