@@ -8,16 +8,21 @@ namespace BHOD.Data
 {
     interface IAppointment
     {
-        IEnumerable<Appointment> GetAll();
-        Appointment GetById(int AppointmentId);
         void Add(Appointment newAppointment);
+
+        IEnumerable<Appointment> GetAll();
+        IEnumerable<AppointmentHistory> GetAppointmentHistory(int id);
+        IEnumerable<PreBookedAppointments> GetCurrentPreBooked(int id);
+
+        Appointment GetById(int AppointmentId);
+        Appointment GetAppointment(int personalId);
+        string GetCurrentAppointmentCustomer(int personalId);
+        string GetCurrentPreBookedCustomerName(int id);
+
         void AppointmentOut(int personalId, int paymentMethodId);
         void AppointmentIn(int personalId, int paymentMethodId);
-        IEnumerable<AppointmentHistory> GetAppointmentHistory(int id);
-
         void Reserved(int personalId, int paymentMethodId);
-        string GetCurrentPreBookedCustomerName(int id);
         DateTime GetCurrentPreBookedSchedule(int id);
-        IEnumerable<PreBookedAppointments> GetCurrentPreBooked(int id);
+       
     }
 }

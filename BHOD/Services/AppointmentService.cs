@@ -93,14 +93,30 @@ namespace BHOD.Services
             .FirstOrDefault(status => status.Name == "Available");
 
         }
-        public string GetCurrentPreBookedCustomerName(int id)
+        public string GetCurrentPreBookedCustomerName(int Prebookedid)
         {
-            throw new NotImplementedException();
+            var reserved = _context.PreBookedAppointmentses
+                .Include(pb => pb.ShopPersonal)
+                .Include(pb => pb.PaymentMethod)
+                .FirstOrDefault(pb => pb.Id == Prebookedid);
+
+            var paymentId = reserved?.ShopPersonal.Id;
+
+            var customer = _context.Customers.Include(c => c.PaymentMethod)
+                .FirstOrDefault(c => c.PaymentMethod.Id == paymentId);
+
+            return customer?.FirstName + " " + customer.LastName;
         }
 
-        public DateTime GetCurrentPreBookedSchedule(int id)
+        public DateTime GetCurrentPreBookedSchedule(int Prebookedid)
         {
-            throw new NotImplementedException();
+            return _context.PreBookedAppointmentses
+                  .Include(pb => pb.ShopPersonal)
+                  .Include(pb => pb.PaymentMethod)
+                  .FirstOrDefault(pb => pb.Id == Prebookedid)
+                  .PreBookedPlaced;
+
+
         }
 
         public void Reserved(int personalId, int paymentMethodId)
@@ -112,6 +128,21 @@ namespace BHOD.Services
 
             var payment = _context.PaymentMethods
                 .FirstOrDefault(m => m.Id == paymentMethodId);
+
+            if (personal.Status.Name == "Available")
+            {
+                UpdatePersonalStatus(personalId, "Reserved");
+            }
+
+            var prebooked = new PreBookedAppointments
+            {
+                PreBookedPlaced = now,
+                ShopPersonal = personal,
+                PaymentMethod = payment
+            };
+
+            _context.Add(prebooked);
+            _context.SaveChanges();
         }
 
         public void AppointmentIn(int personalId, int paymentMethodId)
@@ -208,6 +239,35 @@ namespace BHOD.Services
                 .Any();
 
             return isAppointmentPlaced;
+        }
+
+        public string GetCurrentAppointmentCustomer(int personalId)
+        {
+
+            var appointment = GetAppointmentByPersonalId(personalId);
+            if (appointment == null)
+            {
+                return " Not scheduled.";
+            };
+
+            var paymentId = appointment.PaymentMethod.Id;
+
+            var customer = _context.Customers
+                .Include(c => c.PaymentMethod)
+                .FirstOrDefault(c => c.PaymentMethod.Id == paymentId)
+
+                return customer.FirstName + " " + customer.LastName;
+            
+        }
+
+        private Appointment GetAppointmentByPersonalId(int personalId)
+        {
+            return _context.Appointmentses
+                 .Include(a => a.ShopPersonal)
+                 .Include(a => a.PaymentMethod)
+                 .FirstOrDefault(a => a.ShopPersonal.Id == personalId);
+
+            
         }
     }
 }
