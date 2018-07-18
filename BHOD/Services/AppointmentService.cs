@@ -247,14 +247,14 @@ namespace BHOD.Services
             var appointment = GetAppointmentByPersonalId(personalId);
             if (appointment == null)
             {
-                return " Not scheduled.";
+                return "c n";
             };
 
             var paymentId = appointment.PaymentMethod.Id;
 
             var customer = _context.Customers
                 .Include(c => c.PaymentMethod)
-                .FirstOrDefault(c => c.PaymentMethod.Id == paymentId)
+                .FirstOrDefault(c => c.PaymentMethod.Id == paymentId);
 
                 return customer.FirstName + " " + customer.LastName;
             

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BHOD.Data
 {
-    interface IAppointment
+    public interface IAppointment
     {
         void Add(Appointment newAppointment);
 

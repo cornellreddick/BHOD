@@ -5,18 +5,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using BHOD.Domain.Selections;
 using BHOD.Services;
+using BHOD.Data;
+using static BHOD.Domain.Selections.PersonalDetailModel;
 
 namespace BHOD.Controllers
 {
     public class SelectionController : Controller
     {
         private IShopPersonal _personal;
+        private IAppointment _appointments; 
 
-        public SelectionController(IShopPersonal personal)
+        public SelectionController(IShopPersonal personal, IAppointment appointments)
         {
             _personal = personal;
+            _appointments = appointments;
         }
 
+      
         public IActionResult Index()
         {
             var personalModels = _personal.GetAll();
@@ -43,6 +48,13 @@ namespace BHOD.Controllers
         {
             var personal = _personal.GetById(id);
 
+            var prebookedAppointments = _appointments.GetCurrentPreBooked(id)
+                .Select(a => new PersonalPrebookedModel
+                {
+                   AppointmentPlaced = _appointments.GetCurrentPreBookedSchedule(a.Id).ToString("d"), 
+                    CustomerName = _appointments.GetCurrentPreBookedCustomerName(a.Id)
+                });
+
             var model = new PersonalDetailModel
             {
                 PersonalId = id,
@@ -51,7 +63,12 @@ namespace BHOD.Controllers
                 ImageUrl = personal.ImageUrl,
                 BarberOrHairstylist = _personal.GetBarberOrHairstylist(id),
                 CurrentLocation = _personal.GetCurrentLocation(id).Name,
-                Type = _personal.GetType(id)
+                Type = _personal.GetType(id),
+                AppointmentHistory = _appointments.GetAppointmentHistory(id),
+                LatestAppointment = _appointments.GetAppointment(id),
+                CustomerName = _appointments.GetCurrentAppointmentCustomer(id),
+                PrebookedAppointment = prebookedAppointments 
+
             };
 
             return View(model);  
