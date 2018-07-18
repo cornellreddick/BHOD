@@ -7,6 +7,7 @@ using BHOD.Domain.Selections;
 using BHOD.Services;
 using BHOD.Data;
 using static BHOD.Domain.Selections.PersonalDetailModel;
+using BHOD.Domain.Appointments;
 
 namespace BHOD.Controllers
 {
@@ -72,6 +73,26 @@ namespace BHOD.Controllers
             };
 
             return View(model);  
+        }
+
+        public IActionResult Appointment(int id)
+        {
+            var personal = _personal.GetById(id);
+            var model = new AppointmentModel
+            {
+                PersonalId = id,
+                ImageUrl = personal.ShopName,
+                PaymentMethodId = "",
+                IsAppointmentPlaced = _appointments.IsAppointmentPlaced(id)
+            };
+            return View(model);
+           
+        }
+
+        public IActionResult PlaceAppointment(int personalId, int paymentMethodId)
+        {
+            _appointments.AppointmentIn(personalId, paymentMethodId);
+            return RedirectToAction("Detail", new { id = personalId });
         }
     }
 }

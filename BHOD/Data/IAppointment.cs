@@ -18,6 +18,7 @@ namespace BHOD.Data
         Appointment GetAppointment(int personalId);
         string GetCurrentAppointmentCustomer(int personalId);
         string GetCurrentPreBookedCustomerName(int id);
+        bool IsAppointmentPlaced(int id); 
 
         void AppointmentOut(int personalId, int paymentMethodId);
         void AppointmentIn(int personalId, int paymentMethodId);

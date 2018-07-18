@@ -232,7 +232,7 @@ namespace BHOD.Services
             return now.AddDays(7);
         }
 
-        private bool IsAppointmentPlaced(int personalId)
+        public bool IsAppointmentPlaced(int personalId)
         {
             var isAppointmentPlaced = _context.Appointmentses
                 .Where(ap => ap.ShopPersonal.Id == personalId)
@@ -269,5 +269,7 @@ namespace BHOD.Services
 
             
         }
+
+      
     }
 }
