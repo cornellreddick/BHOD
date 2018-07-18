@@ -1,0 +1,153 @@
+﻿@model BHOD.Domain.Appointments.AppointmentModel
+@*@{
+        ViewBag.Title = Model.Title;
+    }*@
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+}
+
+<div class="container">
+    <div class="header clearfix detailHeading">
+        <h2 class="text-muted">Reserve Shop Personal</h2>
+    </div>
+
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-3">
+                <div>
+                    <p id="itemName">@Model.StylistName</p>
+                    <img class="detailImage" src="@Model.ImageUrl" />
+                </div>
+            </div>
+            <div class="col-md-9">
+                <p>There are currently @Model.ReservedCount reserved in the queue for this item. </p>
+                @using (Html.BeginForm("ReserveAppointment", "Selection", FormMethod.Post))
+                {
+                    @Html.HiddenFor(a => a.PersonalId)
+                    <div>
+                        Please insert a Payment Method ID.
+                        @Html.TextBoxFor(a => a.PaymentMethodId)
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-info btn-lg">Reserve Appointment</button>
+                    </div>
+
+                }
+                <--#region-->
+                    @*<p id="itemName">@Model.StylistName</p>*@
+                    @*<p id="item">@Model.StylistName</p>
+                            <p id="itemStatus">@Model.Status</p>
+                            <p id="itemType">@Model.Type</p>
+                            <p id="itemLocation">Last Location: @Model.CurrentLocation</p>
+                            @if (Model.Status == "Checked Out")
+                            {
+                                <p id="itemPatron">Checked Out By: @Model.CustomerName</p>
+                            }
+
+                            @if (@Model.Status != "Lost")
+                            {
+                                @if (@Model.Status == "Available")
+                                {
+                                    <p><a class="btn btn-lg btn-info" role="button" asp-controller="Catalog" asp-action="Appointment" asp-route-id="@Model.PersonalId">Check Out</a></p>
+                                }
+
+                                @if (@Model.Status == "Checked Out")
+                                {
+                                    <p><a class="btn btn-lg btn-success" role="button" asp-controller="Catalog" asp-action="CheckIn" asp-route-id="@Model.PersonalId">Check In</a></p>
+                                    <p><a class="btn btn-lg btn-warning" role="button" asp-controller="Catalog" asp-action="Hold" asp-route-id="@Model.PersonalId">Place Hold</a></p>
+                                }
+
+                                <p><a class="btn btn-lg btn-danger" role="button" asp-controller="Catalog" asp-action="MarkLost" asp-route-id="@Model.PersonalId">Mark Item Lost</a></p>
+                            }
+
+                            else
+                            {
+                                <p>This item has been lost. It cannot be checked out.</p>
+                                <p><a class="btn btn-lg btn-success" role="button" asp-controller="Catalog" asp-action="MarkFound" asp-route-id="@Model.PersonalId">Mark Item Found</a></p>
+                            }
+
+                        </div>
+                        <div class="col-md-4 detailInfo">
+                            <table>
+                                <tr>
+                                    <td class="itemLabel">TO DO: </td>
+                                    <td class="itemValue">@Model.PaymentMethodId</td>
+                                </tr>
+                                <tr>
+                                    <td class="itemLabel">TO DO: </td>
+                                    <td class="itemValue">@Model.ReservedCount</td>
+                                </tr>
+                                <tr>
+                                    <td class="itemLabel">TO DO:  </td>
+                                    <td class="itemValue">$@Model.ReservedCount</td>
+                                </tr>
+                            </table>*@
+                </--#region-->
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+            <div class="col-lg-6">
+                <h4>Appointment History</h4>
+                <table class="table table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Date assigned</th>
+                            <th>Date completed</th>
+                            <th>Payment Id</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var appointment in @Model.PaymentMethodId)
+                        {
+                            <tr>
+                                <td>
+                                    @appointment
+                                </td>
+                                <td>
+                                    @appointment
+                                </td>
+                                <td>
+                                    @appointment
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-6">
+                <h4>Reserved Appointments</h4>
+                <table class="table table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Reserved Placed</th>
+                            <th>Customer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var reserved in @Model.PaymentMethodId)
+                        {
+                            <tr>
+                                <td>
+                                    @reserved
+                                </td>
+                                <td>
+                                    @reserved
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@

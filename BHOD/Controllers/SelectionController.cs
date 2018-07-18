@@ -89,9 +89,30 @@ namespace BHOD.Controllers
            
         }
 
+        public IActionResult Reserved(int id)
+        {
+            var personal = _personal.GetById(id);
+            var model = new AppointmentModel
+            {
+                PersonalId = id,
+                ImageUrl = personal.ShopName,
+                PaymentMethodId = "",
+                IsAppointmentPlaced = _appointments.IsAppointmentPlaced(id),
+                ReservedCount = _appointments.GetCurrentPreBooked(id).Count()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
         public IActionResult PlaceAppointment(int personalId, int paymentMethodId)
         {
             _appointments.AppointmentIn(personalId, paymentMethodId);
+            return RedirectToAction("Detail", new { id = personalId });
+        }
+        [HttpPost]
+        public IActionResult ReserveAppointment(int personalId, int paymentMethodId)
+        {
+            _appointments.Reserved(personalId, paymentMethodId);
             return RedirectToAction("Detail", new { id = personalId });
         }
     }
