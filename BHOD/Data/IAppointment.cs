@@ -21,7 +21,7 @@ namespace BHOD.Data
         bool IsAppointmentPlaced(int id); 
 
         void AppointmentOut(int personalId, int paymentMethodId);
-        void AppointmentIn(int personalId, int paymentMethodId);
+        void AppointmentIn(int personalId);
         void Reserved(int personalId, int paymentMethodId);
         DateTime GetCurrentPreBookedSchedule(int id);
        

@@ -82,7 +82,7 @@ namespace BHOD.Services
             _context.SaveChanges();
         }
 
-        private void UpdatePersonalStatus(int personalId, string s)
+        private void UpdatePersonalStatus(int personalId, string newStatus)
         {
             var item = _context.ShopPersonals
                 .FirstOrDefault(p => p.Id == personalId);
@@ -90,7 +90,7 @@ namespace BHOD.Services
                 _context.Update(item);
 
             item.Status = _context.Statuses
-            .FirstOrDefault(status => status.Name == "Available");
+            .FirstOrDefault(status => status.Name == newStatus);
 
         }
         public string GetCurrentPreBookedCustomerName(int Prebookedid)
@@ -124,6 +124,7 @@ namespace BHOD.Services
             var now = DateTime.Now;
 
             var personal = _context.ShopPersonals
+                .Include(p => p.Status)
                 .FirstOrDefault(p => p.Id == personalId);
 
             var payment = _context.PaymentMethods
@@ -145,7 +146,7 @@ namespace BHOD.Services
             _context.SaveChanges();
         }
 
-        public void AppointmentIn(int personalId, int paymentMethodId)
+        public void AppointmentIn(int personalId)
         {
             var now = DateTime.Now;
 
@@ -165,6 +166,7 @@ namespace BHOD.Services
             if (currentPreBookedAppointments.Any())
             {
                 PreBookedAppointmentsToFirstPlaced(personalId, currentPreBookedAppointments);
+                return;
             }
 
             UpdatePersonalStatus(personalId, "Available");
@@ -218,6 +220,7 @@ namespace BHOD.Services
             var appointmentHistory = new AppointmentHistory
             {
                 CheckedOut = now,
+                CheckedIn = now,
                 Shop = item,
                 Payment = PaymentMethod
 

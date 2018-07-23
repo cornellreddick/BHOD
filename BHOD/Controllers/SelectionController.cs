@@ -75,18 +75,23 @@ namespace BHOD.Controllers
             return View(model);  
         }
 
-        public IActionResult Appointment(int id)
+        public IActionResult AppointmentsOut(int id)
         {
             var personal = _personal.GetById(id);
             var model = new AppointmentModel
             {
                 PersonalId = id,
-                ImageUrl = personal.ShopName,
+                ImageUrl = personal.ImageUrl,
                 PaymentMethodId = "",
                 IsAppointmentPlaced = _appointments.IsAppointmentPlaced(id)
             };
             return View(model);
            
+        }
+        public IActionResult AppointmentsIn(int personalId)
+        {
+            _appointments.AppointmentIn(personalId);
+            return RedirectToAction("Detail", new { id = personalId});
         }
 
         public IActionResult Reserved(int id)
@@ -95,7 +100,7 @@ namespace BHOD.Controllers
             var model = new AppointmentModel
             {
                 PersonalId = id,
-                ImageUrl = personal.ShopName,
+                ImageUrl = personal.ImageUrl,
                 PaymentMethodId = "",
                 IsAppointmentPlaced = _appointments.IsAppointmentPlaced(id),
                 ReservedCount = _appointments.GetCurrentPreBooked(id).Count()
@@ -104,9 +109,9 @@ namespace BHOD.Controllers
         }
 
         [HttpPost]
-        public IActionResult PlaceAppointment(int personalId, int paymentMethodId)
+        public IActionResult PlacedAppointment(int personalId, int paymentMethodId)
         {
-            _appointments.AppointmentIn(personalId, paymentMethodId);
+            _appointments.AppointmentOut(personalId, paymentMethodId);
             return RedirectToAction("Detail", new { id = personalId });
         }
         [HttpPost]
