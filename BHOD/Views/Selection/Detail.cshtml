@@ -37,12 +37,12 @@
             {
                 <p id="itemCustomer">Apointment Schedule by: @Model.CustomerName</p>
                 <p><a class="btn btn-lg btn-info" role="button" asp-controller="Selection" asp-action="Reserved" asp-route-id="@Model.PersonalId">Reserve Appointment</a></p>
-                // Change here.
+               
             }
 
             @if (Model.Status == "Not Available")
             {
-                //<p id="itemCustomer">Apointment Schedule by: @Model.CustomerName</p>
+                <p id="itemCustomer">Apointment Schedule by: @Model.CustomerName</p>
                 <p><a class="btn btn-lg btn-success" role="button" asp-controller="Selection" asp-action="AppointmentsOut" asp-route-id="@Model.PersonalId"> Complete Appointment</a></p>
                 <p><a class="btn btn-lg btn-warning" role="button" asp-controller="Selection" asp-action="Reserved" asp-route-id="@Model.PersonalId">Reserve Appointment</a></p>
 
